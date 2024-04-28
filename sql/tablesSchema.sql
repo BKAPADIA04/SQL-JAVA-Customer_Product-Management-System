@@ -2,7 +2,13 @@ CREATE TABLE Customer (
     CustomerID INT PRIMARY KEY,
     FirstName VARCHAR(50),
     LastName VARCHAR(50),
-    Phone VARCHAR(20)
+    Phone VARCHAR(20),
+    EmailID VARCHAR(255)
+);
+
+CREATE TABLE Brand (
+    BrandID INT PRIMARY KEY,
+    BrandName VARCHAR(100)
 );
 
 CREATE TABLE Product (
@@ -12,11 +18,6 @@ CREATE TABLE Product (
     Price DECIMAL(10, 2),
     Quantity INT,
     FOREIGN KEY (BrandID) REFERENCES Brand(BrandID)
-);
-
-CREATE TABLE Brand (
-    BrandID INT PRIMARY KEY,
-    BrandName VARCHAR(100)
 );
 
 CREATE TABLE Review (
