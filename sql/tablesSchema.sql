@@ -16,7 +16,6 @@ CREATE TABLE Product (
     BrandID INT,
     ProductName VARCHAR(100),
     Price DECIMAL(10, 2),
-    Quantity INT,
     FOREIGN KEY (BrandID) REFERENCES Brand(BrandID)
 );
 
