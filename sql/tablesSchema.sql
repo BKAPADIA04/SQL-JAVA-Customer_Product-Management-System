@@ -3,19 +3,19 @@ CREATE TABLE Customer (
     FirstName VARCHAR(50),
     LastName VARCHAR(50),
     Phone VARCHAR(20),
-    EmailID VARCHAR(255)
+    EmailID VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Brand (
     BrandID INT PRIMARY KEY,
-    BrandName VARCHAR(100)
+    BrandName VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE Product (
     ProductID INT PRIMARY KEY,
     BrandID INT,
     ProductName VARCHAR(100),
-    Price DECIMAL(10, 2),
+    Price DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (BrandID) REFERENCES Brand(BrandID)
 );
 
