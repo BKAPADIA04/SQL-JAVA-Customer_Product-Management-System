@@ -78,8 +78,9 @@ public class JdbcDemo {
                   query = "INSERT INTO Customer VALUES(" + customer_ID_input + ", '" + first_name_input + "', '" + last_name_input + "', '" + phone_number_input + "', '" + emailid_input + "')";
                   // System.out.println((query));
                   int rowsAffected = stmt.executeUpdate(query);
-                  if(rowsAffected > 0) { System.out.println("Customer added successfully");}
-                  else { System.out.println("Failed to add customer");}
+                  conn.setAutoCommit(false);
+                  if(rowsAffected > 0) { System.out.println("Customer added successfully"); conn.commit();}
+                  else { System.out.println("Failed to add customer"); conn.rollback();}
                }
                rs.close();
             }    
@@ -107,9 +108,10 @@ public class JdbcDemo {
                // query = "INSERT INTO Customer VALUES(" + customer_ID_input + ", " + first_name_input + ", " + last_name_input + ", " + emailid_input + ")";
                   query = "INSERT INTO Product VALUES(" + product_ID_input + ", " + brand_ID_input + ", '" + product_name_input + "', " + price_input +  ")";
                   // System.out.println((query));
+                  conn.setAutoCommit(false);
                   int rowsAffected = stmt.executeUpdate(query);
-                  if(rowsAffected > 0) { System.out.println("Product added successfully");}
-                  else { System.out.println("Failed to add product");}
+                  if(rowsAffected > 0) { System.out.println("Product added successfully"); conn.commit();}
+                  else { System.out.println("Failed to add product");conn.rollback();}
                }
                else {
                   System.out.println("BrandID Not Available");
@@ -132,11 +134,14 @@ public class JdbcDemo {
                }
                if (flag == 0) {
                   query = "INSERT INTO Brand VALUES(" + brand_ID_input + ", '" + brand_name_input + "')";
+                  conn.setAutoCommit(false);
                   int rowsAffected = stmt.executeUpdate(query);
                   if (rowsAffected > 0) {
                      System.out.println("Brand added successfully");
+                     conn.commit();
                   } else {
                      System.out.println("Failed to add brand");
+                     conn.rollback();
                   }
                }
                rs.close();
@@ -164,11 +169,14 @@ public class JdbcDemo {
                if (flag == 0) {
                   query = "INSERT INTO Review VALUES(" + review_ID_input + ", " + customer_ID_input + ", " + product_ID_input + ", '" + review_input + "')";
                   // System.out.println(query);
+                  conn.setAutoCommit(false);
                   int rowsAffected = stmt.executeUpdate(query);
                   if (rowsAffected > 0) {
                      System.out.println("Review added successfully");
+                     conn.commit();
                   } else {
                      System.out.println("Failed to add review");
+                     conn.rollback();
                   }
                }
                rs.close();
@@ -177,44 +185,48 @@ public class JdbcDemo {
                System.out.println("Enter the customer ID to be removed");
                int customer_ID_input = sc.nextInt();
                String query = "DELETE FROM Customer WHERE CustomerID = " + customer_ID_input;
+               conn.setAutoCommit(false);
                int rowsAffected = stmt.executeUpdate(query);
                if (rowsAffected > 0) {
-                  System.out.println("Customer removed successfully");
+                  System.out.println("Customer removed successfully");conn.commit();
                } else {
-                  System.out.println("Failed to remove customer");
+                  System.out.println("Failed to remove customer");conn.rollback();
                }
             }
             else if(choice == 6) {
                System.out.println("Enter the product ID to be removed");
                int product_ID_input = sc.nextInt();
                String query = "DELETE FROM Product WHERE ProductID = " + product_ID_input;
+               conn.setAutoCommit(false);
                int rowsAffected = stmt.executeUpdate(query);
                if (rowsAffected > 0) {
-                  System.out.println("Product removed successfully");
+                  System.out.println("Product removed successfully");conn.commit();
                } else {
-                  System.out.println("Failed to remove product");
+                  System.out.println("Failed to remove product");conn.rollback();
                }
             }
             else if(choice == 7) {
                System.out.println("Enter the brand ID to be removed");
                int brand_ID_input = sc.nextInt();
                String query = "DELETE FROM Brand WHERE BrandID = " + brand_ID_input;
+               conn.setAutoCommit(false);
                int rowsAffected = stmt.executeUpdate(query);
                if (rowsAffected > 0) {
-                  System.out.println("Brand removed successfully");
+                  System.out.println("Brand removed successfully");conn.commit();
                } else {
-                  System.out.println("Failed to remove brand");
+                  System.out.println("Failed to remove brand");conn.rollback();
                }
             }
             else if(choice == 8) {
                System.out.println("Enter the review ID to be removed");
                int review_ID_input = sc.nextInt();
                String query = "DELETE FROM Review WHERE ReviewID = " + review_ID_input;
+               conn.setAutoCommit(false);
                int rowsAffected = stmt.executeUpdate(query);
                if (rowsAffected > 0) {
-                  System.out.println("Review removed successfully");
+                  System.out.println("Review removed successfully");conn.commit();
                } else {
-                  System.out.println("Failed to remove Review");
+                  System.out.println("Failed to remove Review");conn.rollback();
                }
             }
             else if(choice == 9) {
@@ -223,11 +235,12 @@ public class JdbcDemo {
                System.out.println("Enter the new phone number");
                String phone_number_input = sc.next();
                String query = "UPDATE Customer SET Phone = " + phone_number_input + " WHERE CustomerID = " + customer_ID_input;
+               conn.setAutoCommit(false);
                int rowsAffected = stmt.executeUpdate(query);
                if (rowsAffected > 0) {
-                  System.out.println("Customer Phone Number updated successfully");
+                  System.out.println("Customer Phone Number updated successfully");conn.commit();
                } else {
-                  System.out.println("Failed to update customer's phone number");
+                  System.out.println("Failed to update customer's phone number");conn.rollback();
                }
             }
             else if(choice == 10) {
@@ -236,11 +249,12 @@ public class JdbcDemo {
                System.out.println("Enter the new price of the product");
                double price_input = sc.nextDouble();
                String query = "UPDATE Product SET Price = " + price_input + " WHERE ProductID = " + product_ID_input;
+               conn.setAutoCommit(false);
                int rowsAffected = stmt.executeUpdate(query);
                if (rowsAffected > 0) {
-                  System.out.println("Product Price updated successfully");
+                  System.out.println("Product Price updated successfully");conn.commit();
                } else {
-                  System.out.println("Failed to update price of the product");
+                  System.out.println("Failed to update price of the product");conn.rollback();
                }
             }
             else if(choice == 11) {
@@ -442,27 +456,6 @@ public class JdbcDemo {
                break;
             }
          }
-         // }
-         // select Brand.*,Product.ProductID,Product.ProductName,Product.Price from brand INner JOIN product on Brand.brandi
-         // d = Product.brandid WHERE Brand.brandID = 502;
-         // String query = "SELECT FirstName, LastName, Phone, EmailID from Customer";
-         // ResultSet rs = stmt.executeQuery(query);
-
-         // // STEP 4: Extract data from result set
-         // while (rs.next()) {
-
-         // // Retrieve by column name
-         // String fname = rs.getString("FirstName");
-         // String lname = rs.getString("LastName");
-         // String birthDate = rs.getString("Phone");
-         // String dno = rs.getString("EmailID");
-
-         // // Display values
-         // System.out.print("fname: " + fname);
-         // System.out.print(", lname: " + lname);
-         // System.out.print(", birth date: " + birthDate.toString());
-         // System.out.println(", department number: " + dno);
-         // }
 
          
          // STEP 5: Clean-up environment
