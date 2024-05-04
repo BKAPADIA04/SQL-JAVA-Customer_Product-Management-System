@@ -54,7 +54,7 @@ public class JdbcDemo {
             System.out.println("18. Fetch All Reviews");
             System.out.println("19. Most Rich Customer");
             System.out.println("20. Exit");
-
+            
             int choice = sc.nextInt();
             // String temp = sc.nextLine();
             if (choice == 1) {
@@ -89,6 +89,7 @@ public class JdbcDemo {
                System.out.println("Enter BrandID:"); int brand_ID_input = sc.nextInt();
                System.out.println("Enter Product Name:"); String product_name_input = sc.next();
                System.out.println("Enter Price:"); double price_input = sc.nextDouble();
+               System.out.println("Enter Quantity:"); int quantity_input = sc.nextInt();
                
                String query = "SELECT * from Product WHERE ProductID = " + product_ID_input;
                ResultSet rs = stmt.executeQuery(query);int flag = 0;int flag1 = 0;
@@ -106,7 +107,7 @@ public class JdbcDemo {
                if(flag == 0 && flag1 == 1)
                {
                // query = "INSERT INTO Customer VALUES(" + customer_ID_input + ", " + first_name_input + ", " + last_name_input + ", " + emailid_input + ")";
-                  query = "INSERT INTO Product VALUES(" + product_ID_input + ", " + brand_ID_input + ", '" + product_name_input + "', " + price_input +  ")";
+                  query = "INSERT INTO Product VALUES(" + product_ID_input + ", " + brand_ID_input + ", '" + product_name_input + "', " + price_input + ", "+quantity_input+")";
                   // System.out.println((query));
                   conn.setAutoCommit(false);
                   int rowsAffected = stmt.executeUpdate(query);
@@ -172,8 +173,20 @@ public class JdbcDemo {
                   conn.setAutoCommit(false);
                   int rowsAffected = stmt.executeUpdate(query);
                   if (rowsAffected > 0) {
+                     query = "SELECT quantity from product where productid = " + product_ID_input;
+                     rs = stmt.executeQuery(query);
+                     Integer q = 0;
+                     while(rs.next())
+                     {
+                        q = rs.getInt("quantity");
+                        q = q-1;
+                     }
+                     query = "update product set quantity = " +q+ " where productid = " + product_ID_input;
+                     if(stmt.executeUpdate(query) >= 0) {
                      System.out.println("Review added successfully");
                      conn.commit();
+                     }
+                     else {conn.rollback();}
                   } else {
                      System.out.println("Failed to add review");
                      conn.rollback();
@@ -292,13 +305,14 @@ public class JdbcDemo {
                   String ProductName = rs.getString("ProductName");
                   double Price = rs.getDouble("Price");
                   String BrandName = rs.getString("BrandName");
-                  // int Quantity = rs.getInt("Quantity");
+                  int Quantity = rs.getInt("quantity");
 
                   System.out.print("Product ID : "+product_ID_input+"\n");
                   System.out.print("Brand ID : "+BrandID+"\n");
                   System.out.print("Product Name : "+ProductName+"\n");
                   System.out.print("Price : "+Price+"\n");
                   System.out.print("Brand : "+BrandName+"\n");
+                  System.out.print("Quantity : "+Quantity+"\n");
 
                   flag = 1;
                }
@@ -310,7 +324,7 @@ public class JdbcDemo {
             else if(choice == 13) {
                System.out.println("Enter the BrandID for Brand Specific Products");
                int brand_ID_input = sc.nextInt();
-               String query = "SELECT Brand.*,Product.ProductID,Product.ProductName,Product.Price FROM Brand INNER JOIN Product ON Brand.brandID = Product.BrandID WHERE Brand.brandID = " + brand_ID_input;
+               String query = "SELECT Brand.*,Product.ProductID,Product.ProductName,Product.Price,Product.quantity FROM Brand INNER JOIN Product ON Brand.brandID = Product.BrandID WHERE Brand.brandID = " + brand_ID_input;
                ResultSet rs = stmt.executeQuery(query);
                int flag = 0;
                while (rs.next()) {
@@ -319,12 +333,14 @@ public class JdbcDemo {
                   String ProductName = rs.getString("ProductName");
                   double Price = rs.getDouble("Price");
                   String BrandName = rs.getString("BrandName");
+                  int Quantity = rs.getInt("quantity");
               
                   System.out.println("Brand ID: " + BrandID);
                   System.out.println("Brand: " + BrandName);
                   System.out.println("Product ID: " + ProductID);
                   System.out.println("Product Name: " + ProductName);
                   System.out.println("Price: " + Price);
+                  System.out.print("Quantity : "+Quantity+"\n");
 
                   flag = 1;
                }
@@ -345,12 +361,15 @@ public class JdbcDemo {
                   int CustomerID = rs.getInt("CustomerID");
                   String ProductName = rs.getString("ProductName");
                   double Price = rs.getDouble("Price");
+                  int Quantity = rs.getInt("quantity");
               
+
                   System.out.println("Customer ID: " + CustomerID);
                   System.out.println("Brand ID: " + BrandID);
                   System.out.println("Product ID: " + ProductID);
                   System.out.println("Product Name: " + ProductName);
                   System.out.println("Price: " + Price);
+                  System.out.print("Quantity : "+Quantity+"\n");
 
                   flag = 1;
                }
@@ -388,11 +407,13 @@ public class JdbcDemo {
                   int BrandID = rs.getInt("BrandID");
                   String ProductName = rs.getString("ProductName");
                   double Price = rs.getDouble("Price");
+                  int Quantity = rs.getInt("quantity");
 
                   System.out.print("Product ID : "+ProductID+"\n");
                   System.out.print("Brand ID : "+BrandID+"\n");
                   System.out.print("Product Name : "+ProductName+"\n");
                   System.out.print("Price : "+Price+"\n");
+                  System.out.print("Quantity : "+Quantity+"\n");
 
                   flag = 1;
                }
@@ -464,6 +485,14 @@ public class JdbcDemo {
          conn.close();
       } catch (SQLException se) { // Handle errors for JDBC
          se.printStackTrace();
+         System.out.println("Rolling back data here....");
+      try{
+         if(conn!=null)
+             conn.rollback();
+      }catch(SQLException se2){
+	      System.out.println("Rollback failed....");
+              se2.printStackTrace();
+      }
       } catch (Exception e) { // Handle errors for Class.forName
          e.printStackTrace();
       } finally { // finally block used to close resources regardless of whether an exception was
